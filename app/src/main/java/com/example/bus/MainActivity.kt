@@ -2,76 +2,74 @@ package com.example.bus
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
 import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_main.*
 import org.w3c.dom.*
 import java.lang.Exception
+import java.net.URL
 import javax.xml.parsers.DocumentBuilderFactory
-
-var text=""
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val textView = findViewById<TextView>(R.id.textView)
-        val button = findViewById<Button>(R.id.button)
+        var textView = findViewById<TextView>(R.id.textView)
 
         textView.text = ""
 
-        val key = "serviceKey=49MtiWZphKESstysEbkcqhO%2Fiwj167tnKLNaWHXzucroDPqMSVAdpal4ncuZkDT7YF9qAtA3kLw3T6VmgX%2F6HA%3D%3D"
-        val stationId = "&stationId=200000078"
-        val url = "http://apis.data.go.kr/6410000/busarrivalservice/getBusArrivalList?"+key+stationId
-
         button.setOnClickListener {
 
-            val thread = Thread(NetworkThread(url))
+            val thread = NetworkThread()
             thread.start()
-            thread.join()
-
-            textView.text = text
         }
     }
-}
 
-class NetworkThread(
-    val url: String): Runnable {
+    inner class NetworkThread: Thread() {
 
         override fun run() {
 
             try {
-                val xml: Document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(url)
-                xml.documentElement.normalize()
 
-                val list: NodeList = xml.getElementsByTagName("item")
+                var site = "http://apis.data.go.kr/6410000/busarrivalservice/getBusArrivalList?serviceKey=49MtiWZphKESstysEbkcqhO%2Fiwj167tnKLNaWHXzucroDPqMSVAdpal4ncuZkDT7YF9qAtA3kLw3T6VmgX%2F6HA%3D%3D&stationId=200000078"
+                var url = URL(site)
+                var conn = url.openConnection()
+                var input = conn.getInputStream()
 
-                for(i in 0..list.length-1) {
-                    val n: Node = list.item(i)
-                    if(n.nodeType == Node.ELEMENT_NODE) {
-                        val element = n as Element
-                        val map = mutableMapOf<String, String>()
+                var factory = DocumentBuilderFactory.newInstance()
+                var builder = factory.newDocumentBuilder()
 
-                        for(j in 0..element.attributes.length-1) {
-                            map.putIfAbsent(
-                                element.attributes.item(j).nodeName,
-                                element.attributes.item(j).nodeValue
-                            )
-                        }
+                var doc = builder.parse(input)
 
-                        var routeId = element.getElementsByTagName("routeId").item(0).textContent
-                        var predictTime1 = element.getElementsByTagName("predictTime1").item(0).textContent
-                        var predictTime2 = element.getElementsByTagName("predictTime2").item(0).textContent
+                var root = doc.documentElement
 
-                        println("1. 노선Id: $routeId\n 2. 도착예정시간: $predictTime1\n 3. 도착예정시간: $predictTime2\n")
-                        text = "1. 노선Id: $routeId\n 2. 도착예정시간: $predictTime1\n 3. 도착예정시간: $predictTime2\n"
-                        println("hi~")
-                        text = "안뇽"
+                var itemNodeList = root.getElementsByTagName("busArrivalList")
+
+                for (i in 0 until itemNodeList.length) {
+                    var itemElement = itemNodeList.item(i) as Element
+
+                    var routeIdList = itemElement.getElementsByTagName("routeId")
+                    var predictTime1List = itemElement.getElementsByTagName("predictTime1")
+                    var predictTime2List = itemElement.getElementsByTagName("predictTime2")
+
+                    var routeIdNode = routeIdList.item(0) as Element
+                    var predictTime1Node = predictTime1List.item(0) as Element
+                    var predictTime2Node = predictTime2List.item(0) as Element
+
+                    var routeId = routeIdNode.textContent
+                    var predictTime1 = predictTime1Node.textContent
+                    var predictTime2 = predictTime2Node.textContent
+
+                    runOnUiThread {
+                        textView.append("노선Id: ${routeId}\n")
+                        textView.append("도착예정시간1: ${predictTime1}\n")
+                        textView.append("도착예정시간2: ${predictTime2}\n")
                     }
                 }
             } catch (e: Exception) {
-                Log.d("TTT", "openAPI"+e.toString())
+                e.printStackTrace()
             }
         }
     }
+}
+
