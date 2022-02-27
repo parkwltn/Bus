@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         textView.text = ""
 
         //1분마다 도착정보 조회
-        timer (period =60000) {
+        timer (period = 60000) {
             val thread = NetworkThread();
             thread.start()
         }
@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
                         textView.append("도착예정시간2: ${predictTime2}\n")
                     }
                 }
+                textView.setText("")
             } catch (e: Exception) {
                 e.printStackTrace()
             }
