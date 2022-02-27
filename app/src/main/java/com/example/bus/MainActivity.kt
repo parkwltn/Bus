@@ -64,6 +64,15 @@ class MainActivity : AppCompatActivity() {
                     var predictTime1 = predictTime1Node.textContent
                     var predictTime2 = predictTime2Node.textContent
 
+                    //routeIdToName
+                    when (routeId) {
+                        "200000120" -> routeId = "2007"
+                        "200000104" -> routeId = "3000"
+                        "200000265" -> routeId = "30-1"
+                        "200000010" -> routeId = "900"
+                        "200000055" -> routeId = "25"
+                    }
+
                     runOnUiThread {
                         textView.append("노선Id: ${routeId}\n")
                         textView.append("도착예정시간1: ${predictTime1}\n")
