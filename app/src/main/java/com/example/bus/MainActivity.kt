@@ -8,6 +8,7 @@ import org.w3c.dom.*
 import java.lang.Exception
 import java.net.URL
 import javax.xml.parsers.DocumentBuilderFactory
+import kotlin.concurrent.timer
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,8 +19,12 @@ class MainActivity : AppCompatActivity() {
 
         textView.text = ""
 
-        val thread = NetworkThread();
-        thread.start()
+        //1분마다 도착정보 조회
+        timer (period =60000) {
+            val thread = NetworkThread();
+            thread.start()
+        }
+
     }
 
     inner class NetworkThread: Thread() {
