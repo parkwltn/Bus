@@ -18,11 +18,8 @@ class MainActivity : AppCompatActivity() {
 
         textView.text = ""
 
-        button.setOnClickListener {
-
-            val thread = NetworkThread()
-            thread.start()
-        }
+        val thread = NetworkThread();
+        thread.start()
     }
 
     inner class NetworkThread: Thread() {
@@ -30,8 +27,10 @@ class MainActivity : AppCompatActivity() {
         override fun run() {
 
             try {
+                var serviceKey = "serviceKey=49MtiWZphKESstysEbkcqhO%2Fiwj167tnKLNaWHXzucroDPqMSVAdpal4ncuZkDT7YF9qAtA3kLw3T6VmgX%2F6HA%3D%3D"
+                var stationId = "&stationId=200000078"
+                var site = "http://apis.data.go.kr/6410000/busarrivalservice/getBusArrivalList?"+serviceKey+stationId
 
-                var site = "http://apis.data.go.kr/6410000/busarrivalservice/getBusArrivalList?serviceKey=49MtiWZphKESstysEbkcqhO%2Fiwj167tnKLNaWHXzucroDPqMSVAdpal4ncuZkDT7YF9qAtA3kLw3T6VmgX%2F6HA%3D%3D&stationId=200000078"
                 var url = URL(site)
                 var conn = url.openConnection()
                 var input = conn.getInputStream()
