@@ -2,22 +2,27 @@ package com.example.bus
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
+import android.util.Log
 import android.widget.TextView
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import org.w3c.dom.*
 import java.lang.Exception
 import java.net.URL
+import java.util.*
 import javax.xml.parsers.DocumentBuilderFactory
 import kotlin.concurrent.timer
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
+
+    private var tts: TextToSpeech? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        var textView = findViewById<TextView>(R.id.textView)
-
-        textView.text = ""
+        tts = TextToSpeech(this, this)
 
         //1분마다 도착정보 조회
         //timer (period = 60000) {
@@ -81,6 +86,9 @@ class MainActivity : AppCompatActivity() {
                         //탑승 예약 안내
                         println("$enteredBusNum 번 버스 탑승 예약이 완료되었습니다.")
 
+                        //TTS
+                        speakOut(enteredBusNum+"번 버스 탑승 예약이 완료되었습니다.")
+
                         //예약 리스트
                         var BusReservationList = mutableListOf<String>()
                         BusReservationList.add(enteredBusNum)
@@ -97,16 +105,43 @@ class MainActivity : AppCompatActivity() {
 
                     //테스트 - 삭제
                     runOnUiThread {
-                        textView.append("노선Id: ${routeId}\n")
-                        textView.append("도착예정시간1: ${predictTime1}\n")
-                        textView.append("도착예정시간2: ${predictTime2}\n")
+                        //textView.append("노선Id: ${routeId}\n")
+                        //textView.append("도착예정시간1: ${predictTime1}\n")
+                        //textView.append("도착예정시간2: ${predictTime2}\n")
                     }
                 }
-                textView.setText("")
+                //textView.setText("")
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
+
     }
+
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS) {
+            val result = tts!!.setLanguage(Locale.KOREAN)
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "The Langauge specified is not supported!")
+            }
+        } else {
+            Log.e("TTS", "Initialization Failed!")
+        }
+    }
+
+    public override fun onDestroy() {
+
+        if (tts != null) {
+            tts!!.stop()
+            tts!!.shutdown()
+        }
+        super.onDestroy()
+    }
+
+    private fun speakOut(text: String) {
+        tts!!.speak(text, TextToSpeech.QUEUE_FLUSH, null, "")
+    }
+
 }
 
