@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
                             "25" -> println("$routeId 번 버스는 $predictTime1 분 후 도착합니다.")
                         }
 
-                        //도착 안내 2: 1, 3, 6, 9분 전 안내
+                        //도착 안내 2: 1, 3, 6분 전 안내
                     }
 
                     //테스트 - 삭제
