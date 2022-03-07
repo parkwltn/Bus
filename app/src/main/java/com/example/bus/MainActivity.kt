@@ -59,15 +59,15 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
                     var routeIdList = itemElement.getElementsByTagName("routeId")
                     var predictTime1List = itemElement.getElementsByTagName("predictTime1")
-                    var predictTime2List = itemElement.getElementsByTagName("predictTime2")
+                    //var predictTime2List = itemElement.getElementsByTagName("predictTime2")
 
                     var routeIdNode = routeIdList.item(0) as Element
                     var predictTime1Node = predictTime1List.item(0) as Element
-                    var predictTime2Node = predictTime2List.item(0) as Element
+                    //var predictTime2Node = predictTime2List.item(0) as Element
 
                     var routeId = routeIdNode.textContent
                     var predictTime1 = predictTime1Node.textContent
-                    var predictTime2 = predictTime2Node.textContent
+                    //var predictTime2 = predictTime2Node.textContent
 
                     //routeIdToName
                     when (routeId) {
@@ -76,6 +76,13 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                         "200000265" -> routeId = "30-1"
                         "200000010" -> routeId = "900"
                         "200000055" -> routeId = "25"
+                        "200000006" -> routeId = "300"
+                        "200000024" -> routeId = "310"
+                        "200000074" -> routeId = "27"
+                        "200000056" -> routeId = "25-2"
+                        "233000007" -> routeId = "777"
+                        "233000031" -> routeId = "7770"
+                        "233000083" -> routeId = "30"
                     }
 
                     //버스번호 입력 받기 - HW 연동
