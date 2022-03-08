@@ -25,10 +25,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         tts = TextToSpeech(this, this)
 
         //1분마다 도착정보 조회
-        //timer (period = 60000) {
+        timer (period = 60000) {
             val thread = NetworkThread();
             thread.start()
-        //}
+        }
 
     }
 
@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     }
 
                     //버스번호 입력 받기 - HW 연동
-                    var enteredBusNum = "25"
+                    var enteredBusNum = "233"
 
                     //if enteredBusNum in routeId
                     if (enteredBusNum in routeId) {
@@ -108,14 +108,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                         }
 
                         //도착 안내 2: 1, 3, 6분 전 안내
+                    } else {
+                        speakOut("해당 버스는 이 정류장에 정차하지 않습니다.")
                     }
 
-                    //테스트 - 삭제
-                    runOnUiThread {
-                        //textView.append("노선Id: ${routeId}\n")
-                        //textView.append("도착예정시간1: ${predictTime1}\n")
-                        //textView.append("도착예정시간2: ${predictTime2}\n")
-                    }
                 }
                 //textView.setText("")
             } catch (e: Exception) {
